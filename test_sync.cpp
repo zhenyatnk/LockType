@@ -1,8 +1,13 @@
 #include "./intf/AdaptersObjectLock.h"
-#include "./win/CLockerFactoryWin.h"
 #include "./utst/utst.h"
 #include <iostream>
 #include <vector>
+
+#if defined(WIN32)
+   #include "./win/CLockerFactory.h"
+#elif defined(LINUX)
+   #include "./linux/CLockerFactory.h"
+#endif
 
 ILockerFactory::Ptr gFactorySync;
 
@@ -79,7 +84,7 @@ int testEvent()
 
 int main(int argc, char* argv[])
 {
-   gFactorySync = ILockerFactory::Ptr(new CLockerFactoryWin);
+   gFactorySync = ILockerFactory::Ptr(new CLockerFactory());
    RUN_UTST(testSemaphoreUnNamed);
    RUN_UTST(testSemaphoreNamed);
    RUN_UTST(testSemaphoreCountLock);

@@ -5,7 +5,7 @@
 #include "../intf/ILocker.h"
 #include "../intf/ILockerFactory.h"
 
-class CLockerFactoryWin: public ILockerFactory
+class CLockerFactory: public ILockerFactory
 {
 public: //Interface ILockerFactory
 	virtual ILocker::Ptr CreateLMutex() override;

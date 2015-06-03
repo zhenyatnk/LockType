@@ -5,6 +5,10 @@ project(LockType)
 set(SOURCE_EXE test_sync.cpp)
 add_executable(LockType ${SOURCE_EXE})
 
-add_subdirectory(win)
-
-target_link_libraries(LockType WinSync)
+IF(WIN32)
+   add_subdirectory(win)
+   target_link_libraries(LockType WinSync)
+ELSE(LINUX)
+   add_subdirectory(linux)
+   target_link_libraries(LockType LinuxSync)
+ENDIF()

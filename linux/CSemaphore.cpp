@@ -1,4 +1,5 @@
-#include "windows.h"
+#include "semaphore.h"
+#include "fcntl.h"
 #include "../intf/ILocker.h"
 #include "CLockerFactory.h"
 #include <string>
@@ -18,43 +19,45 @@ public:
    virtual void UnLock() override;
 
 private:
-   HANDLE mSemaphoreHandle;
+   sem_t* mSemaphoreHandle;
 };
 //-------------------------------------------------
 CSemaphore::CSemaphore()
 {
-   mSemaphoreHandle = CreateSemaphore(NULL, 1, 1, NULL);
+   mSemaphoreHandle = new sem_t();
+   sem_init(mSemaphoreHandle, 0 ,1);
 }
 CSemaphore::CSemaphore(int aMaxLock)
 {
-   mSemaphoreHandle = CreateSemaphore(NULL, aMaxLock, aMaxLock, NULL);
+   mSemaphoreHandle = new sem_t();
+   sem_init(mSemaphoreHandle, 0 ,aMaxLock);
 }
 CSemaphore::CSemaphore(std::string aName)
 {
-   mSemaphoreHandle = CreateSemaphore(NULL, 1, 1, aName.c_str());
+   mSemaphoreHandle = sem_open(aName.c_str(), O_RDRW|O_CREATE, 0, 1);
 }
 CSemaphore::CSemaphore(std::string aName, int aMaxLock)
 {
-   mSemaphoreHandle = CreateSemaphore(NULL, aMaxLock, aMaxLock, aName.c_str());
+   mSemaphoreHandle = sem_open(aName.c_str(), O_RDRW|O_CREATE, 0, aMaxLock);
 }
 CSemaphore::~CSemaphore()
 {
-   CloseHandle(mSemaphoreHandle);
+   sem_close(mSemaphoreHandle);
 }
 
 bool CSemaphore::Lock()
 {
-   return WaitForSingleObject(mSemaphoreHandle, INFINITE) == WAIT_OBJECT_0;
+   return sem_wait(mSemaphoreHandle) >=0;
 }
 
 bool CSemaphore::Lock(int aTimeWat)
 {
-   return WaitForSingleObject(mSemaphoreHandle, aTimeWat) == WAIT_OBJECT_0;
+   return sem_wait(mSemaphoreHandle) >=0;
 }
 
 void CSemaphore::UnLock()
 {
-   ReleaseSemaphore(mSemaphoreHandle, 1, NULL);
+   sem_post(mSemaphoreHandle);
 }
 
 //-------------------------------------------------

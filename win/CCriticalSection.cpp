@@ -2,7 +2,7 @@
 //
 #include "windows.h"
 #include "../intf/ILocker.h"
-#include "CLockerFactoryWin.h"
+#include "CLockerFactory.h"
 #include <string>
 
 //-------------------------------------------------
@@ -46,7 +46,7 @@ void CCriticalSection::UnLock()
    LeaveCriticalSection(&mCriticalSection);
 }
 //-------------------------------------------------
-ILocker::Ptr CLockerFactoryWin::CreateLCriticalSection()
+ILocker::Ptr CLockerFactory::CreateLCriticalSection()
 {
    return ILocker::Ptr(new CCriticalSection());
 }

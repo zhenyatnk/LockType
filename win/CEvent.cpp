@@ -1,6 +1,6 @@
 #include "windows.h"
 #include "../intf/ILocker.h"
-#include "CLockerFactoryWin.h"
+#include "CLockerFactory.h"
 #include <string>
 
 //-------------------------------------------------
@@ -53,12 +53,12 @@ void CEvent::UnLock()
    SetEvent(mEventHandle);
 }
 //-------------------------------------------------
-ILocker::Ptr CLockerFactoryWin::CreateLEvent()
+ILocker::Ptr CLockerFactory::CreateLEvent()
 {
    return ILocker::Ptr(new CEvent());
 }
 
-ILocker::Ptr CLockerFactoryWin::CreateLEvent(std::string aName)
+ILocker::Ptr CLockerFactory::CreateLEvent(std::string aName)
 {
    return ILocker::Ptr(new CEvent(aName));
 }

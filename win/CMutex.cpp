@@ -1,6 +1,6 @@
 #include "windows.h"
 #include "../intf/ILocker.h"
-#include "CLockerFactoryWin.h"
+#include "CLockerFactory.h"
 #include <string>
 
 //-------------------------------------------------------------------------
@@ -46,12 +46,12 @@ void CMutex::UnLock()
 }
 
 //-------------------------------------------------
-ILocker::Ptr CLockerFactoryWin::CreateLMutex()
+ILocker::Ptr CLockerFactory::CreateLMutex()
 {
    return ILocker::Ptr(new CMutex());
 }
 
-ILocker::Ptr CLockerFactoryWin::CreateLMutex(std::string aName)
+ILocker::Ptr CLockerFactory::CreateLMutex(std::string aName)
 {
    return ILocker::Ptr(new CMutex(aName));
 }
