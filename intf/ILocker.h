@@ -2,7 +2,6 @@
 #define _I_LOCKER_H_
 
 #include "DSmartPtr.h"
-
 class ILocker
 {
 public:

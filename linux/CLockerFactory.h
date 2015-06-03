@@ -1,5 +1,5 @@
-#ifndef _LOCKER_FACTORY_WIN_H_
-#define _LOCKER_FACTORY_WIN_H_
+#ifndef _LOCKER_FACTORY_LINUX_H_
+#define _LOCKER_FACTORY_LINUX_H_
 
 
 #include "../intf/ILocker.h"

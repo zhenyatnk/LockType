@@ -10,9 +10,52 @@ class CSemaphore:public ILocker
 public:
    CSemaphore();
    CSemaphore(int);
-   CSemaphore(std::string);
-   CSemaphore(std::string, int);
    virtual ~CSemaphore();
+
+   virtual bool Lock() override;
+   virtual bool Lock(int aTimeWat) override;
+   virtual void UnLock() override;
+
+private:
+   sem_t mSemaphoreHandle;
+};
+//-------------------------------------------------
+CSemaphore::CSemaphore()
+{
+   sem_init(&mSemaphoreHandle, 0 ,1);
+}
+CSemaphore::CSemaphore(int aMaxLock)
+{
+   sem_init(&mSemaphoreHandle, 0 ,aMaxLock);
+}
+CSemaphore::~CSemaphore()
+{
+   sem_close(&mSemaphoreHandle);
+}
+
+bool CSemaphore::Lock()
+{
+   return sem_wait(&mSemaphoreHandle) >=0;
+}
+
+bool CSemaphore::Lock(int aTimeWait)
+{
+   timespec lTimeStruct;
+   lTimeStruct.tv_nsec = aTimeWait;
+   return sem_timedwait(&mSemaphoreHandle, &lTimeStruct) >=0;
+}
+
+void CSemaphore::UnLock()
+{
+   sem_post(&mSemaphoreHandle);
+}
+//-------------------------------------------------
+class CSemaphoreNamed:public ILocker
+{
+public:
+   CSemaphoreNamed(std::string);
+   CSemaphoreNamed(std::string, int);
+   virtual ~CSemaphoreNamed();
 
    virtual bool Lock() override;
    virtual bool Lock(int aTimeWat) override;
@@ -22,44 +65,35 @@ private:
    sem_t* mSemaphoreHandle;
 };
 //-------------------------------------------------
-CSemaphore::CSemaphore()
+CSemaphoreNamed::CSemaphoreNamed(std::string aName)
 {
-   mSemaphoreHandle = new sem_t();
-   sem_init(mSemaphoreHandle, 0 ,1);
+   mSemaphoreHandle = sem_open(aName.c_str(), O_RDWR|O_CREAT, 0, 1);
 }
-CSemaphore::CSemaphore(int aMaxLock)
+CSemaphoreNamed::CSemaphoreNamed(std::string aName, int aMaxLock)
 {
-   mSemaphoreHandle = new sem_t();
-   sem_init(mSemaphoreHandle, 0 ,aMaxLock);
+   mSemaphoreHandle = sem_open(aName.c_str(), O_RDWR|O_CREAT, 0, aMaxLock);
 }
-CSemaphore::CSemaphore(std::string aName)
-{
-   mSemaphoreHandle = sem_open(aName.c_str(), O_RDRW|O_CREATE, 0, 1);
-}
-CSemaphore::CSemaphore(std::string aName, int aMaxLock)
-{
-   mSemaphoreHandle = sem_open(aName.c_str(), O_RDRW|O_CREATE, 0, aMaxLock);
-}
-CSemaphore::~CSemaphore()
+CSemaphoreNamed::~CSemaphoreNamed()
 {
    sem_close(mSemaphoreHandle);
 }
 
-bool CSemaphore::Lock()
+bool CSemaphoreNamed::Lock()
 {
    return sem_wait(mSemaphoreHandle) >=0;
 }
 
-bool CSemaphore::Lock(int aTimeWat)
+bool CSemaphoreNamed::Lock(int aTimeWait)
 {
-   return sem_wait(mSemaphoreHandle) >=0;
+   timespec lTimeStruct;
+   lTimeStruct.tv_nsec = aTimeWait;
+   return sem_timedwait(mSemaphoreHandle, &lTimeStruct) >=0;
 }
 
-void CSemaphore::UnLock()
+void CSemaphoreNamed::UnLock()
 {
    sem_post(mSemaphoreHandle);
 }
-
 //-------------------------------------------------
 ILocker::Ptr CLockerFactory::CreateLSemaphore()
 {
@@ -73,9 +107,9 @@ ILocker::Ptr CLockerFactory::CreateLSemaphore(int aMaxLock)
 
 ILocker::Ptr CLockerFactory::CreateLSemaphore(std::string aName)
 {
-   return ILocker::Ptr(new CSemaphore(aName));
+   return ILocker::Ptr(new CSemaphoreNamed(aName));
 }
 ILocker::Ptr CLockerFactory::CreateLSemaphore(std::string aName, int aMaxLock)
 {
-   return ILocker::Ptr(new CSemaphore(aName, aMaxLock));
+   return ILocker::Ptr(new CSemaphoreNamed(aName, aMaxLock));
 }
