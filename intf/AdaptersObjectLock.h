@@ -19,7 +19,7 @@ public:
    explicit CLockedObject(Type aObject)
       :mObject(aObject)
    {
-      mSyncObj = ILockerFactory::Create()->CreateLMutex();
+      mSyncObj = ILockerFactory::Create()->CreateLSemaphore();
    }   
    
    Type GetObject()
@@ -63,7 +63,7 @@ public:
    }
    CLockedObjectAdapter()
    {
-      mSyncObj = ILockerFactory::Create()->CreateLMutex();
+      mSyncObj = ILockerFactory::Create()->CreateLSemaphore();
    }  
    
 public:   //Interface ILocker
