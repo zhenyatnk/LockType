@@ -14,6 +14,8 @@ public:
    virtual bool Lock(int aTimeWat) override;
    virtual void UnLock() override;
 
+   virtual ILocker* Clone() override;
+
 private:
    CRITICAL_SECTION mCriticalSection;
 };
@@ -43,6 +45,12 @@ void CCriticalSection::UnLock()
 {
    LeaveCriticalSection(&mCriticalSection);
 }
+
+ILocker* CCriticalSection::Clone()
+{
+   return new CCriticalSection();
+}
+
 //-------------------------------------------------
 ILocker::Ptr CLockerFactoryWin::CreateLCriticalSection()
 {

@@ -14,6 +14,7 @@ public:
    virtual bool Lock() = 0;
    virtual bool Lock(int aTimeWat) = 0;
    virtual void UnLock() = 0;
+   virtual ILocker* Clone() = 0;
 };
 
 #endif

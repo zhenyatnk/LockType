@@ -17,25 +17,33 @@ public:
    virtual bool Lock(int aTimeWat) override;
    virtual void UnLock() override;
 
+   virtual ILocker* Clone() override;
+
 private:
    HANDLE mSemaphoreHandle;
+   std::string mName;
+   int mMaxLock;
 };
 //-------------------------------------------------
 CSemaphore::CSemaphore()
+   :mMaxLock(1)
 {
-   mSemaphoreHandle = CreateSemaphore(NULL, 1, 1, NULL);
+   mSemaphoreHandle = CreateSemaphore(NULL, mMaxLock, mMaxLock, NULL);
 }
 CSemaphore::CSemaphore(int aMaxLock)
+   :mMaxLock(aMaxLock)
 {
-   mSemaphoreHandle = CreateSemaphore(NULL, aMaxLock, aMaxLock, NULL);
+   mSemaphoreHandle = CreateSemaphore(NULL, mMaxLock, mMaxLock, NULL);
 }
 CSemaphore::CSemaphore(std::string aName)
+   :mName(aName), mMaxLock(1)
 {
-   mSemaphoreHandle = CreateSemaphore(NULL, 1, 1, aName.c_str());
+   mSemaphoreHandle = CreateSemaphore(NULL, mMaxLock, mMaxLock, aName.c_str());
 }
 CSemaphore::CSemaphore(std::string aName, int aMaxLock)
+   :mName(aName), mMaxLock(aMaxLock)
 {
-   mSemaphoreHandle = CreateSemaphore(NULL, aMaxLock, aMaxLock, aName.c_str());
+   mSemaphoreHandle = CreateSemaphore(NULL, mMaxLock, mMaxLock, aName.c_str());
 }
 CSemaphore::~CSemaphore()
 {
@@ -57,6 +65,13 @@ void CSemaphore::UnLock()
    ReleaseSemaphore(mSemaphoreHandle, 1, NULL);
 }
 
+ILocker* CSemaphore::Clone()
+{
+   if(mName.empty())
+      return new CSemaphore(mMaxLock);
+   else
+      return new CSemaphore(mName, mMaxLock);
+}
 //-------------------------------------------------
 ILocker::Ptr CLockerFactoryWin::CreateLSemaphore()
 {

@@ -8,6 +8,8 @@ public:
    virtual bool Lock() override;
    virtual bool Lock(int aTimeWat) override;
    virtual void UnLock() override;
+
+   virtual ILocker* Clone() override;
 };
 //-------------------------------------------------
 bool CEmptySync::Lock()
@@ -22,6 +24,11 @@ bool CEmptySync::Lock(int aTimeWait)
 
 void CEmptySync::UnLock()
 {
+}
+
+ILocker* CEmptySync::Clone()
+{
+   return new CEmptySync();
 }
 //------------------------------------------------
 ILocker::Ptr CLockerFactoryEmpty::CreateLMutex()

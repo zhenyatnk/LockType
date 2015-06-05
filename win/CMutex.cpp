@@ -15,18 +15,24 @@ public:
    virtual bool Lock(int aTimeWat) override;
    virtual void UnLock() override;
 
+   virtual ILocker* Clone() override;
+
 private:
    HANDLE mMutexHandle;
+   std::string mName;
 };
 //-------------------------------------------------------------------------
-CMutex::CMutex(std::string aName)
-{
-   mMutexHandle = CreateMutex(NULL, FALSE, aName.c_str());
-}
 CMutex::CMutex()
 {
    mMutexHandle = CreateMutex(NULL, FALSE, NULL);
 }
+
+CMutex::CMutex(std::string aName)
+   :mName(aName)
+{
+   mMutexHandle = CreateMutex(NULL, FALSE, mName.c_str());
+}
+
 CMutex::~CMutex()
 {
    CloseHandle(mMutexHandle);
@@ -36,13 +42,23 @@ bool CMutex::Lock()
 {
    return WaitForSingleObject(mMutexHandle, INFINITE) == WAIT_OBJECT_0;
 }
+
 bool CMutex::Lock(int aTimeWat)
 {
    return WaitForSingleObject(mMutexHandle, aTimeWat) == WAIT_TIMEOUT;
 }
+
 void CMutex::UnLock()
 {
    ReleaseMutex(mMutexHandle);
+}
+
+ILocker* CMutex::Clone()
+{
+   if(mName.empty())
+      return new CMutex();
+   else
+      return new CMutex(mName);
 }
 
 //-------------------------------------------------

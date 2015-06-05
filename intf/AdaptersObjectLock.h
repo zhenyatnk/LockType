@@ -7,22 +7,33 @@
 
 //-------------------------------------------------
 template <class Type>
+class CLockedObjectAdapter;
+
+template <class Type>
 class CLockedObject 
-   :public ILocker
 {
+   template <class> friend class CLockedObjectAdapter;
+
 public:   
     template <class lType>
     CLockedObject(lType aObject, ILocker::Ptr SyncObj)
       :mObject(aObject), mSyncObj(SyncObj)
-   {
-   }
+   {   }
+
    explicit CLockedObject(Type aObject)
-      :mObject(aObject)
-   {
-      mSyncObj = ILockerFactory::Create()->CreateLSemaphore();
-   }   
+      :mObject(aObject), mSyncObj(ILockerFactory::Create()->CreateLSemaphore())
+   {   } 
    
-   Type GetObject()
+   CLockedObject(const CLockedObjectAdapter<Type> &aLockObj)
+      :mObject((Type)aLockObj), mSyncObj(aLockObj.mSyncObj->Clone())
+   {   }   
+
+   CLockedObject(const CLockedObject &aObj)
+      : mObject(aObj.GetObject), mSyncObj(aObj.mSyncObj->Clone())
+   {   }
+
+
+   const Type& GetObject() const
    {
       return mObject;
    }
@@ -32,16 +43,16 @@ public:
       mObject = aObject;
    }
 
-public:   //Interface ILocker
-   virtual bool Lock() override
+public:   //Interface locking
+   bool Lock()
    {
       return mSyncObj->Lock();
    }
-   virtual bool Lock(int aTimeWat) override
+   bool Lock(int aTimeWat)
    {
       return mSyncObj->Lock(aTimeWat);
    }
-   virtual void UnLock() override
+   void UnLock()
    {
       mSyncObj->UnLock();
    }
@@ -54,28 +65,37 @@ private:
 //-------------------------------------------------
 template <class Type>
 class CLockedObjectAdapter
-   :public ILocker, public Type
+   :public Type
 {
+   template <class> friend class CLockedObject;
+
 public:
+   CLockedObjectAdapter()
+      :mSyncObj(ILockerFactory::Create()->CreateLSemaphore())
+   {   }
+
    explicit CLockedObjectAdapter(ILocker::Ptr SyncObj)
       :mSyncObj(SyncObj)
-   {
-   }
-   CLockedObjectAdapter()
-   {
-      mSyncObj = ILockerFactory::Create()->CreateLSemaphore();
-   }  
-   
-public:   //Interface ILocker
-   virtual bool Lock()
+   {   }
+
+   CLockedObjectAdapter(const CLockedObject<Type> &aLockObj)
+      :Type(aLockObj.GetObject()), mSyncObj(aLockObj.mSyncObj->Clone())
+   {   }
+
+   CLockedObjectAdapter(const CLockedObjectAdapter<Type> &aLockObj)
+      :Type((Type)aLockObj), mSyncObj(aLockObj.mSyncObj->Clone())
+   {   }
+
+public:   //Interface locking
+   bool Lock()
    {
       return mSyncObj->Lock();
    }
-   virtual bool Lock(int aTimeWat)
+   bool Lock(int aTimeWat)
    {
       return mSyncObj->Lock(aTimeWat);
    }
-   virtual void UnLock()
+   void UnLock()
    {
       mSyncObj->UnLock();
    }

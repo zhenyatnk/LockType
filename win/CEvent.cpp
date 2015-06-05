@@ -15,8 +15,11 @@ public:
    virtual bool Lock(int aTimeWat) override;
    virtual void UnLock() override;
 
+   virtual ILocker* Clone() override;
+
 private:
    HANDLE mEventHandle;
+   std::string mName;
 };
 //-------------------------------------------------
 CEvent::CEvent()
@@ -24,8 +27,9 @@ CEvent::CEvent()
    mEventHandle = CreateEvent(NULL, TRUE, TRUE, NULL);
 }
 CEvent::CEvent(std::string aName)
+   :mName(aName)
 {
-   mEventHandle = CreateEvent(NULL, TRUE, TRUE, aName.c_str());
+   mEventHandle = CreateEvent(NULL, TRUE, TRUE, mName.c_str());
 }
 CEvent::~CEvent()
 {
@@ -51,6 +55,14 @@ bool CEvent::Lock(int aTimeWat)
 void CEvent::UnLock()
 {
    SetEvent(mEventHandle);
+}
+
+ILocker* CEvent::Clone()
+{
+   if(mName.empty())
+      return new CEvent();
+   else
+      return new CEvent(mName);
 }
 //-------------------------------------------------
 ILocker::Ptr CLockerFactoryWin::CreateLEvent()
