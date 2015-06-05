@@ -36,7 +36,7 @@ int testSemaphoreCountLock()
 }
 int testSemaphoreNamed()
 {
-   CLockedObjectAdapter<std::vector<int> > lVectorNLocked(gFactorySync->CreateLSemaphore("Global Semaphore"));
+   CLockedObjectAdapter<std::vector<int> > lVectorNLocked(gFactorySync->CreateLSemaphore("/GlobalSemaphore"));
 
    UASSERT(lVectorNLocked.Lock(500));
    UASSERT(!lVectorNLocked.Lock(500));

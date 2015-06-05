@@ -41,7 +41,8 @@ bool CSemaphore::Lock()
 bool CSemaphore::Lock(int aTimeWait)
 {
    timespec lTimeStruct;
-   lTimeStruct.tv_nsec = aTimeWait;
+   lTimeStruct.tv_sec = 0;
+   lTimeStruct.tv_nsec = 1000000*aTimeWait;
    return sem_timedwait(&mSemaphoreHandle, &lTimeStruct) >=0;
 }
 
@@ -67,11 +68,11 @@ private:
 //-------------------------------------------------
 CSemaphoreNamed::CSemaphoreNamed(std::string aName)
 {
-   mSemaphoreHandle = sem_open(aName.c_str(), O_RDWR|O_CREAT, 0, 1);
+   mSemaphoreHandle = sem_open(aName.c_str(), O_RDWR|O_CREAT, S_IRWXO | S_IRWXG | S_IRWXU, 1);
 }
 CSemaphoreNamed::CSemaphoreNamed(std::string aName, int aMaxLock)
 {
-   mSemaphoreHandle = sem_open(aName.c_str(), O_RDWR|O_CREAT, 0, aMaxLock);
+   mSemaphoreHandle = sem_open(aName.c_str(), O_RDWR|O_CREAT, S_IRWXO | S_IRWXG | S_IRWXU, aMaxLock);
 }
 CSemaphoreNamed::~CSemaphoreNamed()
 {
@@ -86,7 +87,8 @@ bool CSemaphoreNamed::Lock()
 bool CSemaphoreNamed::Lock(int aTimeWait)
 {
    timespec lTimeStruct;
-   lTimeStruct.tv_nsec = aTimeWait;
+   lTimeStruct.tv_sec = 0;
+   lTimeStruct.tv_nsec = 1000000*aTimeWait;
    return sem_timedwait(mSemaphoreHandle, &lTimeStruct) >=0;
 }
 
