@@ -37,6 +37,7 @@ public:
    {
       mObject = aObj.GetObject();
       mSyncObj = ILocker::Ptr(aObj.mSyncObj->Clone());
+      return *this;
    }
 
    const Type& GetObject() const
@@ -101,6 +102,7 @@ public:
    {
       Type::operator=((Type)aLockObj);
       mSyncObj = ILocker::Ptr(aLockObj.mSyncObj->Clone());
+      return *this;
    }
    
    
