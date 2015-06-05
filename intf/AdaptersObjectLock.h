@@ -20,7 +20,8 @@ public:
       :mObject(aObject), mSyncObj(SyncObj)
    {   }
 
-   explicit CLockedObject(Type aObject)
+   template <class lType>
+   explicit CLockedObject(lType aObject)
       :mObject(aObject), mSyncObj(ILockerFactory::Create()->CreateLSemaphore())
    {   } 
    
@@ -29,11 +30,21 @@ public:
    {   }   
 
    CLockedObject(const CLockedObject &aObj)
-      : mObject(aObj.GetObject), mSyncObj(aObj.mSyncObj->Clone())
+      : mObject(aObj.GetObject()), mSyncObj(aObj.mSyncObj->Clone())
    {   }
 
+   CLockedObject& operator = (const CLockedObject &aObj)
+   {
+      mObject = aObj.GetObject();
+      mSyncObj = ILocker::Ptr(aObj.mSyncObj->Clone());
+   }
 
    const Type& GetObject() const
+   {
+      return mObject;
+   }
+
+   Type& GetObject()
    {
       return mObject;
    }
@@ -86,6 +97,13 @@ public:
       :Type((Type)aLockObj), mSyncObj(aLockObj.mSyncObj->Clone())
    {   }
 
+   CLockedObjectAdapter& operator = (const CLockedObjectAdapter<Type> &aLockObj)
+   {
+      Type::operator=((Type)aLockObj);
+      mSyncObj = ILocker::Ptr(aLockObj.mSyncObj->Clone());
+   }
+   
+   
 public:   //Interface locking
    bool Lock()
    {

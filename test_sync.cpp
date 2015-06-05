@@ -124,7 +124,7 @@ int testUASSERT()
 
 int testConvertLocker1()
 {
-   CLockedObject<std::vector<int>> lVectorLocked(std::vector<int>(), gFactorySync->CreateLSemaphore());
+   CLockedObject<std::vector<int> > lVectorLocked(std::vector<int>(), gFactorySync->CreateLSemaphore());
    CLockedObjectAdapter<std::vector<int> > lVectorLocked1 = lVectorLocked;
    UASSERT(lVectorLocked.Lock(500));
    UASSERT(lVectorLocked1.Lock(500));
@@ -146,7 +146,7 @@ int testConvertLocker1()
 
 int testConvertLocker2()
 {
-   CLockedObjectAdapter<std::vector<int>> lVectorLocked(gFactorySync->CreateLSemaphore());
+   CLockedObjectAdapter<std::vector<int> > lVectorLocked(gFactorySync->CreateLSemaphore());
    CLockedObject<std::vector<int> > lVectorLocked1 = lVectorLocked;
    UASSERT(lVectorLocked.Lock(500));
    UASSERT(lVectorLocked1.Lock(500));
@@ -166,7 +166,7 @@ int testConvertLocker2()
 }
 int testConvertLockerCopyValue()
 {
-   CLockedObjectAdapter<std::vector<int>> lVectorLocked(gFactorySync->CreateLSemaphore());
+   CLockedObjectAdapter<std::vector<int> > lVectorLocked(gFactorySync->CreateLSemaphore());
    lVectorLocked.push_back(1);
    lVectorLocked.push_back(2);
    CLockedObject<std::vector<int> > lVectorLocked1 = lVectorLocked;
@@ -178,6 +178,78 @@ int testConvertLockerCopyValue()
    lVectorLocked.push_back(3);
    UASSERT(lVectorLocked1.GetObject().size() == 2);
    UASSERT(lVectorLocked.size() == 3);
+
+   return 1;
+}
+
+int testLockerAdapterCopyCtorValue()
+{
+   CLockedObjectAdapter<std::vector<int> > lVectorLocked(gFactorySync->CreateLSemaphore());
+   lVectorLocked.push_back(1);
+   lVectorLocked.push_back(2);
+   CLockedObjectAdapter<std::vector<int> > lVectorLocked1 = lVectorLocked;
+
+   UASSERT(lVectorLocked1.size() == 2);
+   UASSERT(lVectorLocked[0] == lVectorLocked1[0]);
+   UASSERT(lVectorLocked[1] == lVectorLocked1[1]);
+
+   lVectorLocked.push_back(3);
+   UASSERT(lVectorLocked1.size() == 2);
+   UASSERT(lVectorLocked.size() == 3);
+
+   return 1;
+}
+int testLockerAdapterCopyOprtValue()
+{
+   CLockedObjectAdapter<std::vector<int> > lVectorLocked(gFactorySync->CreateLSemaphore());
+   lVectorLocked.push_back(1);
+   lVectorLocked.push_back(2);
+   CLockedObjectAdapter<std::vector<int> > lVectorLocked1;
+   lVectorLocked1 = lVectorLocked;
+
+   UASSERT(lVectorLocked1.size() == 2);
+   UASSERT(lVectorLocked[0] == lVectorLocked1[0]);
+   UASSERT(lVectorLocked[1] == lVectorLocked1[1]);
+
+   lVectorLocked.push_back(3);
+   UASSERT(lVectorLocked1.size() == 2);
+   UASSERT(lVectorLocked.size() == 3);
+
+   return 1;
+}
+int testLockerCopyCtorValue()
+{
+   CLockedObject<std::vector<int> > lVectorLocked(std::vector<int>(), gFactorySync->CreateLSemaphore());
+   lVectorLocked.GetObject().push_back(1);
+   lVectorLocked.GetObject().push_back(2);
+   CLockedObject<std::vector<int> > lVectorLocked1 = lVectorLocked;
+
+   UASSERT(lVectorLocked1.GetObject().size() == 2);
+   UASSERT(lVectorLocked.GetObject()[0] == lVectorLocked1.GetObject()[0]);
+   UASSERT(lVectorLocked.GetObject()[1] == lVectorLocked1.GetObject()[1]);
+
+   lVectorLocked.GetObject().push_back(3);
+   UASSERT(lVectorLocked1.GetObject().size() == 2);
+   UASSERT(lVectorLocked.GetObject().size() == 3);
+
+   return 1;
+}
+
+int testLockerCopyOprtValue()
+{
+   CLockedObject<std::vector<int> > lVectorLocked(std::vector<int>(), gFactorySync->CreateLSemaphore());
+   lVectorLocked.GetObject().push_back(1);
+   lVectorLocked.GetObject().push_back(2);
+   CLockedObject<std::vector<int> > lVectorLocked1((std::vector<int>)std::vector<int>());
+   lVectorLocked1 = lVectorLocked;
+
+   UASSERT(lVectorLocked1.GetObject().size() == 2);
+   UASSERT(lVectorLocked.GetObject()[0] == lVectorLocked1.GetObject()[0]);
+   UASSERT(lVectorLocked.GetObject()[1] == lVectorLocked1.GetObject()[1]);
+
+   lVectorLocked.GetObject().push_back(3);
+   UASSERT(lVectorLocked1.GetObject().size() == 2);
+   UASSERT(lVectorLocked.GetObject().size() == 3);
 
    return 1;
 }
@@ -196,6 +268,10 @@ int main(int argc, char* argv[])
    RUN_UTST(testConvertLocker1);
    RUN_UTST(testConvertLocker2);
    RUN_UTST(testConvertLockerCopyValue);
+   RUN_UTST(testLockerAdapterCopyCtorValue);
+   RUN_UTST(testLockerAdapterCopyOprtValue);
+   RUN_UTST(testLockerCopyCtorValue);
+   RUN_UTST(testLockerCopyOprtValue);
 
    FINISH_UTST;
    return 0;

@@ -26,12 +26,12 @@ private:
 CSemaphore::CSemaphore()
   :mMaxLock(1)
 {
-   sem_init(&mSemaphoreHandle, 0 ,MaxLock);
+   sem_init(&mSemaphoreHandle, 0 ,mMaxLock);
 }
 CSemaphore::CSemaphore(int aMaxLock)
    :mMaxLock(aMaxLock)
 {
-   sem_init(&mSemaphoreHandle, 0 ,aMaxLock);
+   sem_init(&mSemaphoreHandle, 0 ,mMaxLock);
 }
 CSemaphore::~CSemaphore()
 {
