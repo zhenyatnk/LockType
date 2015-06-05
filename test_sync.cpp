@@ -99,15 +99,27 @@ int testDefaultSync()
    return 1;
 }
 
+int testUASSERT()
+{
+   UASSERT(1==1);
+   UASSERT(1!=4);
+
+   return 1;
+}
+
 int main(int argc, char* argv[])
 {
    gFactorySync = ILockerFactory::Create();
+   START_UTST;
    
+   RUN_UTST(testUASSERT);
    RUN_UTST(testSemaphoreUnNamed);
    RUN_UTST(testSemaphoreNamed);
    RUN_UTST(testSemaphoreCountLock);
    RUN_UTST(testEvent);
    RUN_UTST(testDefaultSync);
+   
+   FINISH_UTST;
    return 0;
 }
 
