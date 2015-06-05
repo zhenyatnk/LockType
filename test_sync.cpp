@@ -6,6 +6,14 @@
 
 ILockerFactory::Ptr gFactorySync;
 
+class Base
+{
+};
+class A: public Base
+{
+};
+
+
 int testSemaphoreUnNamed()
 {
    CLockedObjectAdapter<std::vector<int> > lVectorLocked(gFactorySync->CreateLSemaphore());
@@ -77,13 +85,29 @@ int testEvent()
    return 1;
 }
 
+int testDefaultSync()
+{
+   CLockedObjectAdapter<std::vector<int> > lVectorLocked;
+   UASSERT(lVectorLocked.Lock(500));
+   UASSERT(!lVectorLocked.Lock(500));
+
+   lVectorLocked.UnLock();
+   UASSERT(lVectorLocked.Lock(500));
+
+   lVectorLocked.UnLock();
+
+   return 1;
+}
+
 int main(int argc, char* argv[])
 {
    gFactorySync = ILockerFactory::Create();
+   
    RUN_UTST(testSemaphoreUnNamed);
    RUN_UTST(testSemaphoreNamed);
    RUN_UTST(testSemaphoreCountLock);
    RUN_UTST(testEvent);
+   RUN_UTST(testDefaultSync);
    return 0;
 }
 

@@ -11,7 +11,8 @@ class CLockedObject
    :public ILocker
 {
 public:   
-   CLockedObject(Type aObject, ILocker::Ptr SyncObj)
+    template <class lType>
+    CLockedObject(lType aObject, ILocker::Ptr SyncObj)
       :mObject(aObject), mSyncObj(SyncObj)
    {
    }
@@ -34,15 +35,15 @@ public:
 public:   //Interface ILocker
    virtual bool Lock() override
    {
-	   return mSyncObj->Lock();
+      return mSyncObj->Lock();
    }
    virtual bool Lock(int aTimeWat) override
    {
-	   return mSyncObj->Lock(aTimeWat);
+      return mSyncObj->Lock(aTimeWat);
    }
    virtual void UnLock() override
    {
-	   mSyncObj->UnLock();
+      mSyncObj->UnLock();
    }
    
 private:
@@ -68,15 +69,15 @@ public:
 public:   //Interface ILocker
    virtual bool Lock()
    {
-	   return mSyncObj->Lock();
+      return mSyncObj->Lock();
    }
    virtual bool Lock(int aTimeWat)
    {
-	   return mSyncObj->Lock(aTimeWat);
+      return mSyncObj->Lock(aTimeWat);
    }
    virtual void UnLock()
    {
-	   mSyncObj->UnLock();
+      mSyncObj->UnLock();
    }
    
 private:
