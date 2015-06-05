@@ -3,14 +3,14 @@
 #include <string>
 
 //-------------------------------------------------
-ILocker::Ptr CLockerFactory::CreateLMutex()
+ILocker::Ptr CLockerFactoryLinux::CreateLMutex()
 {
-   CLockerFactory aFactory;
+   CLockerFactoryLinux aFactory;
    return aFactory.CreateLSemaphore();
 }
 
-ILocker::Ptr CLockerFactory::CreateLMutex(std::string aName)
+ILocker::Ptr CLockerFactoryLinux::CreateLMutex(std::string aName)
 {
-   CLockerFactory aFactory;
+   CLockerFactoryLinux aFactory;
    return aFactory.CreateLSemaphore(aName);
 }

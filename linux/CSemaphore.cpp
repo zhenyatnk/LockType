@@ -95,21 +95,21 @@ void CSemaphoreNamed::UnLock()
    sem_post(mSemaphoreHandle);
 }
 //-------------------------------------------------
-ILocker::Ptr CLockerFactory::CreateLSemaphore()
+ILocker::Ptr CLockerFactoryLinux::CreateLSemaphore()
 {
    return ILocker::Ptr(new CSemaphore());
 }
 
-ILocker::Ptr CLockerFactory::CreateLSemaphore(int aMaxLock)
+ILocker::Ptr CLockerFactoryLinux::CreateLSemaphore(int aMaxLock)
 {
    return ILocker::Ptr(new CSemaphore(aMaxLock));
 }
 
-ILocker::Ptr CLockerFactory::CreateLSemaphore(std::string aName)
+ILocker::Ptr CLockerFactoryLinux::CreateLSemaphore(std::string aName)
 {
    return ILocker::Ptr(new CSemaphoreNamed(aName));
 }
-ILocker::Ptr CLockerFactory::CreateLSemaphore(std::string aName, int aMaxLock)
+ILocker::Ptr CLockerFactoryLinux::CreateLSemaphore(std::string aName, int aMaxLock)
 {
    return ILocker::Ptr(new CSemaphoreNamed(aName, aMaxLock));
 }

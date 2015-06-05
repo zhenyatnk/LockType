@@ -1,5 +1,3 @@
-// Mutex.cpp : Defines the entry point for the console application.
-//
 #include "windows.h"
 #include "../intf/ILocker.h"
 #include "CLockerFactory.h"
@@ -46,7 +44,7 @@ void CCriticalSection::UnLock()
    LeaveCriticalSection(&mCriticalSection);
 }
 //-------------------------------------------------
-ILocker::Ptr CLockerFactory::CreateLCriticalSection()
+ILocker::Ptr CLockerFactoryWin::CreateLCriticalSection()
 {
    return ILocker::Ptr(new CCriticalSection());
 }

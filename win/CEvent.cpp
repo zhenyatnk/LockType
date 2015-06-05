@@ -53,12 +53,12 @@ void CEvent::UnLock()
    SetEvent(mEventHandle);
 }
 //-------------------------------------------------
-ILocker::Ptr CLockerFactory::CreateLEvent()
+ILocker::Ptr CLockerFactoryWin::CreateLEvent()
 {
    return ILocker::Ptr(new CEvent());
 }
 
-ILocker::Ptr CLockerFactory::CreateLEvent(std::string aName)
+ILocker::Ptr CLockerFactoryWin::CreateLEvent(std::string aName)
 {
    return ILocker::Ptr(new CEvent(aName));
 }

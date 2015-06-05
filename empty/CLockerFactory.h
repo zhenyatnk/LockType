@@ -1,13 +1,13 @@
-#ifndef _LOCKER_FACTORY_WIN_H_
-#define _LOCKER_FACTORY_WIN_H_
+#ifndef _LOCKER_FACTORY_EMPTY_H_
+#define _LOCKER_FACTORY_EMPTY_H_
 
 #include "../intf/ILocker.h"
 #include "../intf/ILockerFactory.h"
 
-class CLockerFactoryWin: public ILockerFactory
+class CLockerFactoryEmpty: public ILockerFactory
 {
 public: //Interface ILockerFactory
-	virtual ILocker::Ptr CreateLMutex() override;
+   virtual ILocker::Ptr CreateLMutex() override;
    virtual ILocker::Ptr CreateLMutex(std::string) override;
    virtual ILocker::Ptr CreateLSemaphore() override;
    virtual ILocker::Ptr CreateLSemaphore(int) override;

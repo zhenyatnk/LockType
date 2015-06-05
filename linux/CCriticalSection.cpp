@@ -2,9 +2,9 @@
 #include "CLockerFactory.h"
 #include <string>
 //-------------------------------------------------
-ILocker::Ptr CLockerFactory::CreateLCriticalSection()
+ILocker::Ptr CLockerFactoryLinux::CreateLCriticalSection()
 {
-   CLockerFactory aFactory;
+   CLockerFactoryLinux aFactory;
    return aFactory.CreateLSemaphore();
 }
 

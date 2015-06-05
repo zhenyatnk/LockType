@@ -2,6 +2,7 @@
 #define _ADAPTERS_OBJECT_LOCK_H_
 
 #include "ILocker.h"
+#include "ILockerFactory.h"
 #include <string>
 
 //-------------------------------------------------
@@ -10,10 +11,15 @@ class CLockedObject
    :public ILocker
 {
 public:   
-   explicit CLockedObject(Type aObject, ILocker::Ptr SyncObj)
+   CLockedObject(Type aObject, ILocker::Ptr SyncObj)
       :mObject(aObject), mSyncObj(SyncObj)
    {
    }
+   explicit CLockedObject(Type aObject)
+      :mObject(aObject)
+   {
+      mSyncObj = ILockerFactory::CreateLockerFactory()->CreateLMutex();
+   }   
    
    Type GetObject()
    {
@@ -50,11 +56,15 @@ class CLockedObjectAdapter
    :public ILocker, public Type
 {
 public:
-   CLockedObjectAdapter(ILocker::Ptr SyncObj)
+   explicit CLockedObjectAdapter(ILocker::Ptr SyncObj)
       :mSyncObj(SyncObj)
    {
    }
-
+   CLockedObjectAdapter()
+   {
+      mSyncObj = ILockerFactory::CreateLockerFactory()->CreateLMutex();
+   }  
+   
 public:   //Interface ILocker
    virtual bool Lock()
    {

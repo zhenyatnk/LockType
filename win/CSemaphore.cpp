@@ -58,21 +58,21 @@ void CSemaphore::UnLock()
 }
 
 //-------------------------------------------------
-ILocker::Ptr CLockerFactory::CreateLSemaphore()
+ILocker::Ptr CLockerFactoryWin::CreateLSemaphore()
 {
    return ILocker::Ptr(new CSemaphore());
 }
 
-ILocker::Ptr CLockerFactory::CreateLSemaphore(int aMaxLock)
+ILocker::Ptr CLockerFactoryWin::CreateLSemaphore(int aMaxLock)
 {
    return ILocker::Ptr(new CSemaphore(aMaxLock));
 }
 
-ILocker::Ptr CLockerFactory::CreateLSemaphore(std::string aName)
+ILocker::Ptr CLockerFactoryWin::CreateLSemaphore(std::string aName)
 {
    return ILocker::Ptr(new CSemaphore(aName));
 }
-ILocker::Ptr CLockerFactory::CreateLSemaphore(std::string aName, int aMaxLock)
+ILocker::Ptr CLockerFactoryWin::CreateLSemaphore(std::string aName, int aMaxLock)
 {
    return ILocker::Ptr(new CSemaphore(aName, aMaxLock));
 }

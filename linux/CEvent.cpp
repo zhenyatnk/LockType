@@ -2,14 +2,14 @@
 #include "CLockerFactory.h"
 #include <string>
 //-------------------------------------------------
-ILocker::Ptr CLockerFactory::CreateLEvent()
+ILocker::Ptr CLockerFactoryLinux::CreateLEvent()
 {
-   CLockerFactory aFactory;
+   CLockerFactoryLinux aFactory;
    return aFactory.CreateLSemaphore();
 }
 
-ILocker::Ptr CLockerFactory::CreateLEvent(std::string aName)
+ILocker::Ptr CLockerFactoryLinux::CreateLEvent(std::string aName)
 {
-   CLockerFactory aFactory;
+   CLockerFactoryLinux aFactory;
    return aFactory.CreateLSemaphore(aName);
 }

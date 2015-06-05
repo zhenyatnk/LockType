@@ -1,11 +1,10 @@
 #ifndef _LOCKER_FACTORY_LINUX_H_
 #define _LOCKER_FACTORY_LINUX_H_
 
-
 #include "../intf/ILocker.h"
 #include "../intf/ILockerFactory.h"
 
-class CLockerFactory: public ILockerFactory
+class CLockerFactoryLinux: public ILockerFactory
 {
 public: //Interface ILockerFactory
 	virtual ILocker::Ptr CreateLMutex() override;

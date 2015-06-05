@@ -46,12 +46,12 @@ void CMutex::UnLock()
 }
 
 //-------------------------------------------------
-ILocker::Ptr CLockerFactory::CreateLMutex()
+ILocker::Ptr CLockerFactoryWin::CreateLMutex()
 {
    return ILocker::Ptr(new CMutex());
 }
 
-ILocker::Ptr CLockerFactory::CreateLMutex(std::string aName)
+ILocker::Ptr CLockerFactoryWin::CreateLMutex(std::string aName)
 {
    return ILocker::Ptr(new CMutex(aName));
 }
