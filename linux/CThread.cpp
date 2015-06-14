@@ -25,5 +25,5 @@ bool CPosixRunnerThread::Wait()
 //-------------------------------------------------------------------------
 IRunnerThread::Ptr IRunnerThread::Create()
 {
-return new CPosixRunnerThread();
+return IRunnerThread::Ptr(new CPosixRunnerThread());
 }
