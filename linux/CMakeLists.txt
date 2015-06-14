@@ -7,6 +7,7 @@ set(SOURCE_LIB CCriticalSection.cpp
 			   CEvent.cpp
 			   CMutex.cpp
 			   CSemaphore.cpp
+                           CThread.cpp
 )
 
 add_library(LinuxSync STATIC ${SOURCE_LIB})

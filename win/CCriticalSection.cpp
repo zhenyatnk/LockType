@@ -37,8 +37,7 @@ bool CCriticalSection::Lock()
 
 bool CCriticalSection::Lock(int aTimeWat)
 {
-   EnterCriticalSection(&mCriticalSection);
-   return true;
+   return 0 != TryEnterCriticalSection(&mCriticalSection);
 }
 
 void CCriticalSection::UnLock()

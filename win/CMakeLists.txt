@@ -7,6 +7,7 @@ set(SOURCE_LIB CCriticalSection.cpp
 			   CEvent.cpp
 			   CMutex.cpp
 			   CSemaphore.cpp
+                           CThread.cpp
 )
 
 add_library(WinSync STATIC ${SOURCE_LIB})

@@ -45,7 +45,7 @@ bool CMutex::Lock()
 
 bool CMutex::Lock(int aTimeWat)
 {
-   return WaitForSingleObject(mMutexHandle, aTimeWat) == WAIT_TIMEOUT;
+   return WaitForSingleObject(mMutexHandle, aTimeWat) == WAIT_OBJECT_0;
 }
 
 void CMutex::UnLock()

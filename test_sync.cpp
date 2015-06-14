@@ -1,10 +1,168 @@
 #include "./intf/AdaptersObjectLock.h"
+#include "./intf/IThread.h"
 #include "./utst/utst.h"
 #include <iostream>
 #include <vector>
 #include "./intf/ILockerFactory.h"
 
 ILockerFactory::Ptr gFactorySync;
+
+int testThread()
+{
+   class TestThread
+      :public IThread
+   {
+   public:
+      TestThread(int &aResult)
+         :mResult(aResult)
+      {   }
+
+      virtual void Run()
+      {
+         mResult = 12;
+      }
+
+   private:
+      int &mResult;
+   };
+
+   int lResult = 0;
+   TestThread *lThread = new TestThread(lResult);
+   UASSERT(0 == lResult);
+   lThread->start();
+   lThread->wait();
+   UASSERT(12 == lResult);
+   
+   delete lThread;
+   return 1;
+}
+
+CLockedObjectAdapter<std::vector<int> > gVectorLocked;
+int testMutextUnNamed()
+{
+   class TestThread
+      :public IThread
+   {
+   public:
+      TestThread(int &aResult)
+         :mResult(aResult)
+      {   }
+
+      virtual void Run()
+      {
+         if (!gVectorLocked.Lock(500))
+            mResult = -1;
+         else
+         {
+            mResult = 1;
+            gVectorLocked.UnLock();
+         }
+      }
+
+   private:
+      int &mResult;
+   };
+
+   int lResult = 0;
+   TestThread *lThread = new TestThread(lResult);
+   UASSERT(0 == lResult);
+   gVectorLocked = CLockedObjectAdapter<std::vector<int> >(gFactorySync->CreateLMutex());
+   UASSERT(gVectorLocked.Lock(500));
+   lThread->start();
+   lThread->wait();
+   UASSERT(-1 == lResult);
+
+   gVectorLocked.UnLock();
+   lThread->start();
+   lThread->wait();
+   UASSERT(1 == lResult);
+
+   return 1;
+}
+
+int testMutextNamed()
+{
+   class TestThread
+      :public IThread
+   {
+   public:
+      TestThread(int &aResult)
+         :mResult(aResult)
+      {   }
+
+      virtual void Run()
+      {
+         if (!gVectorLocked.Lock(500))
+            mResult = -1;
+         else
+         {
+            mResult = 1;
+            gVectorLocked.UnLock();
+         }
+      }
+
+   private:
+      int &mResult;
+   };
+
+   int lResult = 0;
+   TestThread *lThread = new TestThread(lResult);
+   UASSERT(0 == lResult);
+   gVectorLocked = CLockedObjectAdapter<std::vector<int> >(gFactorySync->CreateLMutex("/GlobalMutex"));
+   UASSERT(gVectorLocked.Lock(500));
+   lThread->start();
+   lThread->wait();
+   UASSERT(-1 == lResult);
+
+   gVectorLocked.UnLock();
+   lThread->start();
+   lThread->wait();
+   UASSERT(1 == lResult);
+
+   return 1;
+}
+
+int testCriticalSection()
+{
+   class TestThread
+      :public IThread
+   {
+   public:
+      TestThread(int &aResult)
+         :mResult(aResult)
+      {   }
+
+      virtual void Run()
+      {
+         if (!gVectorLocked.Lock(500))
+            mResult = -1;
+         else
+         {
+            mResult = 1;
+            gVectorLocked.UnLock();
+         }
+      }
+
+   private:
+      int &mResult;
+   };
+
+   int lResult = 0;
+   TestThread *lThread = new TestThread(lResult);
+   UASSERT(0 == lResult);
+   gVectorLocked = CLockedObjectAdapter<std::vector<int> >(gFactorySync->CreateLCriticalSection());
+   UASSERT(gVectorLocked.Lock(500));
+   lThread->start();
+   lThread->wait();
+   UASSERT(-1 == lResult);
+
+   gVectorLocked.UnLock();
+   lThread->start();
+   lThread->wait();
+   UASSERT(1 == lResult);
+
+   return 1;
+}
 
 int testSemaphoreUnNamed()
 {
@@ -68,20 +226,6 @@ int testSemaphoreNamed()
    UASSERT(lVectorNLocked.Lock(500));
 
    lVectorNLocked.UnLock();
-
-   return 1;
-}
-
-int testCriticalSection()
-{
-   CLockedObjectAdapter<std::vector<int> > lVectorLocked(gFactorySync->CreateLCriticalSection());
-   UASSERT(lVectorLocked.Lock(500));
-   UASSERT(!lVectorLocked.Lock(500));
-
-   lVectorLocked.UnLock();
-   UASSERT(lVectorLocked.Lock(500));
-
-   lVectorLocked.UnLock();
 
    return 1;
 }
@@ -260,10 +404,16 @@ int main(int argc, char* argv[])
    START_UTST;
    
    RUN_UTST(testUASSERT);
+   RUN_UTST(testThread);
+
+   RUN_UTST(testMutextNamed);
+   RUN_UTST(testMutextUnNamed);
+   RUN_UTST(testCriticalSection);
    RUN_UTST(testSemaphoreUnNamed);
    RUN_UTST(testSemaphoreNamed);
    RUN_UTST(testSemaphoreCountLock);
    RUN_UTST(testEvent);
+
    RUN_UTST(testDefaultSync);
    RUN_UTST(testConvertLocker1);
    RUN_UTST(testConvertLocker2);
