@@ -13,6 +13,7 @@ public:
 public:
    virtual bool Start(IThread* aObj) = 0;
    virtual bool Wait() = 0;
+   virtual void Close() = 0;
 
 public:
    static IRunnerThread::Ptr Create();
@@ -38,6 +39,11 @@ public:
    explicit IThread(IRunnerThread::Ptr aRunner)
       :mThreadRunner(aRunner)
    {}
+
+   virtual ~IThread()
+   {
+      mThreadRunner->Close();
+   }
 
    bool start ()
    {

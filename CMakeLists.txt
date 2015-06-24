@@ -8,7 +8,7 @@ add_executable(LockType ${SOURCE_EXE})
 
 if(WIN32)
    add_subdirectory(win)
-   target_link_libraries(LockType WinSync)
+   target_link_libraries(LockType WinSync Ws2_32)
 elseif(UNIX)
    add_definitions(-DLINUX)
    add_subdirectory(linux)
