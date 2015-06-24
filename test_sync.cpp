@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "./intf/ILockerFactory.h"
+#include "./intf/ISocket.h"
 
 ILockerFactory::Ptr gFactorySync;
 
@@ -424,6 +425,7 @@ int main(int argc, char* argv[])
    RUN_UTST(testLockerCopyOprtValue);
 
    FINISH_UTST;
+   
    return 0;
 }
 
