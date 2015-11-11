@@ -6,4 +6,4 @@ Use the four synchronization object:
    Event,
    Semaphore,
 
-Implementation of the sync objects made for Windovs, Posix, Linux, MacOS
+Implementation of the sync objects made for Windows, Posix, Linux, MacOS
