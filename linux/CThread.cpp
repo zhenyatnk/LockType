@@ -8,6 +8,7 @@ class CPosixRunnerThread
 public:
    virtual bool Start(IThread* aObj);
    virtual bool Wait();
+   virtual void Close();
 private:
   pthread_t thread;
 };
@@ -21,6 +22,9 @@ bool CPosixRunnerThread::Start(IThread* aObj)
 bool CPosixRunnerThread::Wait()
 {
    return 0 == pthread_join(thread, NULL);
+}
+void CPosixRunnerThread::Close()
+{
 }
 //-------------------------------------------------------------------------
 IRunnerThread::Ptr IRunnerThread::Create()
